@@ -15,7 +15,7 @@ App in General
 
 
 ## Credits
-Based off brianadvent's todo app.
+Based off brianadvent's tutorial
 
 
 
