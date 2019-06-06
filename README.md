@@ -1,6 +1,6 @@
 # Swift-5-ToDo-App
 A basic todo list app 
-[My App]!(https://i.imgur.com/Y6XHEk9.png)
+![My App](https://i.imgur.com/Y6XHEk9.png)
 
 
 
