@@ -8,7 +8,8 @@ ToDos
 - Delete
 - Update
 - Mark as Complete
-App
+
+App in General
 - Animations
 - Progress Bar
 
