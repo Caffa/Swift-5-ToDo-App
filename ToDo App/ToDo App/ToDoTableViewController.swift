@@ -8,10 +8,26 @@
 
 import UIKit
 
-class ToDoTableViewController: UITableViewController, TodoCellDelegate  {
+class ToDoTableViewController: UITableViewController  {
 
     
-    var todoItems:[ToDoItem]!
+    @IBOutlet weak var progressBar: UIProgressView!
+    
+    //    var todoItems:[ToDoItem]!
+    var todoItems:[ToDoItem]! {
+        didSet{
+            progressBar.setProgress(progress, animated: true)
+        }
+    }
+    
+    var progress:Float {
+        if todoItems.count > 0 {
+            return Float(todoItems.filter({$0.completed}).count) / Float(todoItems.count)
+        }else{
+            return 0
+        }
+    }
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,7 +35,7 @@ class ToDoTableViewController: UITableViewController, TodoCellDelegate  {
         loadData()
     }
     
-    @IBAction func addNewTodo(_ sender: Any) {
+    func addNewTodo() {
         let addAlert = UIAlertController(title: "New ToDo!", message: "Enter a Title", preferredStyle: .alert)
         addAlert.addTextField {(textfield:UITextField) in
             textfield.placeholder = "ToDo Item Title"
@@ -37,7 +53,7 @@ class ToDoTableViewController: UITableViewController, TodoCellDelegate  {
             
             self.tableView.insertRows(at: [indexPath], with: .automatic)
             
-            print("New ToDo Added")
+//            print("New ToDo Added")
         }))
         
         addAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -45,21 +61,59 @@ class ToDoTableViewController: UITableViewController, TodoCellDelegate  {
         self.present(addAlert, animated: true, completion: nil)
     }
     
-    func didRequestDelete(_ cell: ToDoTableViewCell) {
-        if let indexPath = tableView.indexPath(for: cell){
-            todoItems[indexPath.row].deleteItem()
-            todoItems.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .automatic)
+
+   
+    func getUpdatedToDo(_ oldTitle:String) {
+        let addAlert = UIAlertController(title: "Modified ToDo!", message: "Enter a Title", preferredStyle: .alert)
+        addAlert.addTextField {(textfield:UITextField) in
+            textfield.placeholder = oldTitle
         }
+        
+        addAlert.addAction(UIAlertAction(title: "Create", style: .default , handler: {(action:UIAlertAction) in
+            
+            guard let title = addAlert.textFields?.first?.text else {return}
+            let newTodo = ToDoItem(title: title, completed: false, createdAt: Date(), itemIdentifier: UUID())
+            newTodo.saveItem()
+            
+            self.todoItems.append(newTodo)
+            
+            let indexPath = IndexPath(row: self.tableView.numberOfRows(inSection: 0), section: 0)
+            
+            self.tableView.insertRows(at: [indexPath], with: .automatic)
+            
+            //            print("New ToDo Added")
+        }))
+        
+        addAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(addAlert, animated: true, completion: nil)
     }
     
-    func didRequestComplete(_ cell: ToDoTableViewCell) {
-        if let indexPath = tableView.indexPath(for: cell){
-            var todoItem = todoItems[indexPath.row]
-            todoItem.markAsComplete()
-            //optional way of showing completed
+
+
+    func completeTodoItem(_ indexPath:IndexPath) {
+        var todoItem = todoItems[indexPath.row]
+        todoItem.markAsComplete()
+        todoItems[indexPath.row] = todoItem
+        
+        if let cell = tableView.cellForRow(at: indexPath) as? ToDoTableViewCell {
             cell.todoLabel.attributedText = strikeThroughText(todoItem.title)
+            
+            UIView.animate(withDuration: 0.1, animations: {
+                cell.transform = cell.transform.scaledBy(x: 1.5, y: 1.5)
+                
+            }, completion: { (success) in
+                    UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.5,
+                                   options: .curveEaseOut, animations: {
+                        cell.transform = CGAffineTransform.identity
+                    }, completion: nil)
+            }
+                
+            
+            
+            )
         }
+
     }
     
     //optional way of showing completed
@@ -80,6 +134,7 @@ class ToDoTableViewController: UITableViewController, TodoCellDelegate  {
             })
         //reload table view since now have data
         tableView.reloadData()
+        progressBar.setProgress(progress, animated: true)
     }
 
     // MARK: - Table view data source
@@ -97,7 +152,7 @@ class ToDoTableViewController: UITableViewController, TodoCellDelegate  {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! ToDoTableViewCell
         
-        cell.delegate = self
+//        cell.delegate = self
 
         // Configure the cell...
         let todoItem = todoItems[indexPath.row]
@@ -111,6 +166,43 @@ class ToDoTableViewController: UITableViewController, TodoCellDelegate  {
         
 
         return cell
+    }
+    
+//    func focusTodo(_ todoItem:ToDoItem){
+//        //TODO: focus (e.g. make this a main) - edit
+//        //make a text pop up
+//
+//        // edit
+//
+//        print("Focusing on")
+//    }
+    
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let focusAction = UITableViewRowAction(style: .normal, title: "Edit" ) {
+            (action:UITableViewRowAction, indexPath: IndexPath) in
+            let todoItem = self.todoItems[indexPath.row]
+            //TODO: get input
+            let originalText = todoItem.title
+            self.getUpdatedToDo(originalText)
+            self.todoItems[indexPath.row].deleteItem()
+            self.todoItems.remove(at: indexPath.row)
+            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+
+        }
+        focusAction.backgroundColor = UIColor(named: "accentRed")
+        
+        
+        let deleteAction = UITableViewRowAction(style: .normal, title: "Delete"){ (action:UITableViewRowAction, indexPath:IndexPath) in
+            self.todoItems[indexPath.row].deleteItem()
+            self.todoItems.remove(at: indexPath.row)
+            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+        deleteAction.backgroundColor = UIColor(named: "accentBlue")
+        return [deleteAction, focusAction]
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        completeTodoItem(indexPath)
     }
 
     /*

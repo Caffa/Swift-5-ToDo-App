@@ -16,6 +16,7 @@
 		9CE4B6A622A828EC0075B3EF /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE4B6A522A828EC0075B3EF /* DataManager.swift */; };
 		9CE4B6A822A946A60075B3EF /* ToDoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE4B6A722A946A60075B3EF /* ToDoTableViewCell.swift */; };
 		9CE4B6AA22A946CB0075B3EF /* ToDoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE4B6A922A946CB0075B3EF /* ToDoTableViewController.swift */; };
+		9CE4B6AC22A965D70075B3EF /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE4B6AB22A965D70075B3EF /* ContainerViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		9CE4B6A522A828EC0075B3EF /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		9CE4B6A722A946A60075B3EF /* ToDoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoTableViewCell.swift; sourceTree = "<group>"; };
 		9CE4B6A922A946CB0075B3EF /* ToDoTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoTableViewController.swift; sourceTree = "<group>"; };
+		9CE4B6AB22A965D70075B3EF /* ContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				9C541F2C22A66C5400F2CDFF /* AppDelegate.swift */,
+				9CE4B6AB22A965D70075B3EF /* ContainerViewController.swift */,
 				9CE4B6A922A946CB0075B3EF /* ToDoTableViewController.swift */,
 				9CE4B6A722A946A60075B3EF /* ToDoTableViewCell.swift */,
 				9CE4B6A322A828130075B3EF /* ToDoItem.swift */,
@@ -149,6 +152,7 @@
 			files = (
 				9CE4B6A622A828EC0075B3EF /* DataManager.swift in Sources */,
 				9CE4B6AA22A946CB0075B3EF /* ToDoTableViewController.swift in Sources */,
+				9CE4B6AC22A965D70075B3EF /* ContainerViewController.swift in Sources */,
 				9C541F2D22A66C5400F2CDFF /* AppDelegate.swift in Sources */,
 				9CE4B6A422A828130075B3EF /* ToDoItem.swift in Sources */,
 				9C541F3522A66C5400F2CDFF /* ToDo_App.xcdatamodeld in Sources */,
